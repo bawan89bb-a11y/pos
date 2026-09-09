@@ -10,3 +10,4 @@ export * from "./db/expenses";
 export * from "./db/quickkeys";
 export * as reports from "./db/reports";
 export * as dashboard from "./db/dashboard";
+export * as backup from "./db/backup";

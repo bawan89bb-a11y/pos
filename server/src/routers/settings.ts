@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, permProcedure, publicProcedure } from "../trpc";
 import * as settingsDb from "../db/settings";
+import * as backupDb from "../db/backup";
 
 const settingsPatch = z.object({
   store: z.string().optional(),
@@ -24,4 +25,11 @@ export const settingsRouter = router({
   // publicly readable so the login screen can show the business name/logo
   get: publicProcedure.query(() => settingsDb.getSettings()),
   update: permProcedure("settings", "edit").input(settingsPatch).mutation(({ input }) => settingsDb.updateSettings(input)),
+
+  recordCounts: permProcedure("settings", "view").query(() => backupDb.recordCounts()),
+  exportBackup: permProcedure("settings", "export").query(() => backupDb.exportBackup()),
+  restoreBackup: permProcedure("settings", "edit")
+    .input(z.any())
+    .mutation(({ input }) => backupDb.restoreBackup(input)),
+  resetDemoData: permProcedure("settings", "delete").mutation(() => backupDb.resetDemoData()),
 });

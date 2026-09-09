@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { router, permProcedure } from "../trpc";
+import { router, permProcedure, protectedProcedure } from "../trpc";
 import * as usersDb from "../db/users";
 import { ACTIONS, PAGES } from "@thoth/shared";
 
@@ -8,6 +8,12 @@ const permsSchema = z.record(z.enum(PAGES), z.record(z.enum(ACTIONS), z.boolean(
 
 export const usersRouter = router({
   list: permProcedure("settings", "view").query(() => usersDb.listUsers()),
+
+  /** Minimal {id, name} for every user — any signed-in staff member can see who rang up a sale. */
+  names: protectedProcedure.query(async () => {
+    const users = await usersDb.listUsers();
+    return users.map((u) => ({ id: u.id, name: u.name }));
+  }),
 
   create: permProcedure("settings", "create")
     .input(
