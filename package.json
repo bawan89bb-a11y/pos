@@ -1,0 +1,19 @@
+{
+  "name": "thoth-pos",
+  "private": true,
+  "version": "2.0.0",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev:client": "npm run dev -w client",
+    "dev:server": "npm run dev -w server",
+    "build:client": "npm run build -w client",
+    "build:server": "npm run build -w server",
+    "test": "npm run test -w shared && npm run test -w server",
+    "seed": "npm run seed -w server",
+    "db:push": "npm run db:push -w server"
+  }
+}
